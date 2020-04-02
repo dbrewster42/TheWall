@@ -1,0 +1,42 @@
+<div id="underline">
+	<h1 class="header">CodingDojo Wall</h1>	
+	<form action="/users/<%= @user.id %>" method="post" class="header">
+        <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">    
+        <input type="submit" value="logout" id="logout">
+    </form>	
+</div>
+<div class="top">
+	<h3 id="welc">Welcome <%= @user.name %> </h3>
+	<h3 class="messCont">>>> Post a Message</h3>
+	<% if flash[:alert] %>
+		<% flash[:alert].each do |error| %>
+		<p class="error">	<%= error %> </p>
+		<% end %>
+	<% end %>
+	<form action='messages' method="post"  class="top">
+		<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+		
+		<textarea name="message[content]" id="big"></textarea><br>
+		<input type="hidden" name="message[user_id]" value="<%= @user.id %>">
+		<input type="submit" value="Post a Message" id="mess">
+	</form><br>
+	<%=image_tag("wall2.jpg", alt: "The Little Wall Image", id:"smallpic")%>
+</div>	
+<%=image_tag("wall.jpg", alt: "The Wall Image", id:"pic")%>
+<% @messages.each do |m| %>
+	<p><i><%= m.user.name %></i> <%= m.created_at %> </p>
+	<p class="messCont"><%= m.content %></p>	
+	<div class="margin">
+	<% m.comments.each do |c| %>
+		<p><i><%= c.user.name %></i> <%= c.created_at %> </p>
+		<p class="commCont"><%= c.content %></p>
+	<% end %>	
+		<form action='comments' method="post">
+			<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+			<input type="hidden" name="comment[user_id]" value="<%= @user.id %>">
+			<input type="hidden" name="comment[message_id]" value="<%= m.id %>">
+			<textarea name="comment[content]" id="small"></textarea><br>	
+			<input type="submit" value="Post a Comment" id="cbutton">
+		</form>
+	</div>
+<% end %>
